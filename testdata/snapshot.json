@@ -1,0 +1,70 @@
+{
+  "taken_at": "2026-08-11T09:14:00Z",
+  "version": "160002",
+  "statements": [
+    {
+      "queryid": 8823117762, "calls": 4812390,
+      "query": "SELECT id, user_id, kind, payload, created_at FROM events WHERE user_id = $1 AND kind = $2 ORDER BY created_at DESC",
+      "total_exec_time": 3912440.5, "min_exec_time": 0.31, "max_exec_time": 812.4,
+      "mean_exec_time": 0.813, "stddev_exec_time": 4.92,
+      "rows": 9624780, "shared_blks_hit": 41200000, "shared_blks_read": 380000,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 1194772310, "calls": 128,
+      "query": "SELECT * FROM orders o JOIN order_items i ON i.order_id = o.id JOIN customers c ON c.id = o.customer_id WHERE o.created_at > $1 ORDER BY o.total DESC",
+      "total_exec_time": 1104330.0, "min_exec_time": 4200.0, "max_exec_time": 21400.0,
+      "mean_exec_time": 8627.6, "stddev_exec_time": 4210.3,
+      "rows": 8940000, "shared_blks_hit": 1200000, "shared_blks_read": 4100000,
+      "temp_blks_read": 210000, "temp_blks_written": 244000
+    },
+    {
+      "queryid": 4471002911, "calls": 91240,
+      "query": "SELECT id, title FROM articles WHERE title LIKE '%' || $1 || '%' LIMIT $2",
+      "total_exec_time": 402188.0, "min_exec_time": 1.1, "max_exec_time": 940.0,
+      "mean_exec_time": 4.407, "stddev_exec_time": 21.4,
+      "rows": 1824800, "shared_blks_hit": 8800000, "shared_blks_read": 1900000,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 7710233448, "calls": 24100,
+      "query": "SELECT id, email FROM users WHERE lower(email) = $1",
+      "total_exec_time": 288900.0, "min_exec_time": 3.2, "max_exec_time": 210.0,
+      "mean_exec_time": 11.99, "stddev_exec_time": 8.1,
+      "rows": 24100, "shared_blks_hit": 2100000, "shared_blks_read": 640000,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 2298110457, "calls": 3100,
+      "query": "SELECT * FROM events ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+      "total_exec_time": 214900.0, "min_exec_time": 8.0, "max_exec_time": 1900.0,
+      "mean_exec_time": 69.3, "stddev_exec_time": 180.2,
+      "rows": 155000, "shared_blks_hit": 900000, "shared_blks_read": 480000,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 5561200983, "calls": 840,
+      "query": "SELECT id FROM users WHERE id NOT IN (SELECT user_id FROM banned_users)",
+      "total_exec_time": 98400.0, "min_exec_time": 42.0, "max_exec_time": 620.0,
+      "mean_exec_time": 117.1, "stddev_exec_time": 74.0,
+      "rows": 4200000, "shared_blks_hit": 700000, "shared_blks_read": 120000,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 3390047712, "calls": 1920000,
+      "query": "UPDATE sessions SET last_seen_at = now() WHERE token = $1",
+      "total_exec_time": 61440.0, "min_exec_time": 0.02, "max_exec_time": 44.0,
+      "mean_exec_time": 0.032, "stddev_exec_time": 0.19,
+      "rows": 1920000, "shared_blks_hit": 12000000, "shared_blks_read": 900,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    },
+    {
+      "queryid": 6612884401, "calls": 2410000,
+      "query": "SELECT id, name, email FROM users WHERE id = $1",
+      "total_exec_time": 41210.0, "min_exec_time": 0.008, "max_exec_time": 12.0,
+      "mean_exec_time": 0.017, "stddev_exec_time": 0.04,
+      "rows": 2410000, "shared_blks_hit": 9800000, "shared_blks_read": 120,
+      "temp_blks_read": 0, "temp_blks_written": 0
+    }
+  ]
+}

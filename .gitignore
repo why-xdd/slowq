@@ -1,0 +1,5 @@
+slowq
+slowq.exe
+*.json
+!testdata/*.json
+dist/

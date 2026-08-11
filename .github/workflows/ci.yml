@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go: ["1.22", "1.23"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+
+      - name: Format check
+        if: runner.os == 'Linux'
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "gofmt needed on:"; echo "$unformatted"; exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race ./...
+
+      - name: Build
+        run: go build ./...
+
+      # The README opens with this exact output. Running it here means a change
+      # that breaks the demo path fails the build rather than shipping.
+      - name: Smoke test the fixture path
+        if: runner.os == 'Linux'
+        run: |
+          go run ./cmd/slowq -file testdata/snapshot.json -limit 3 | tee out.txt
+          grep -q "of all execution time" out.txt
+          grep -q "CREATE INDEX CONCURRENTLY" out.txt
+          go run ./cmd/slowq -file testdata/snapshot.json -json | jq -e '.[0].findings | length > 0'
+
+  integration:
+    # The pure-function analysis is covered above without a database. This job
+    # exists for the half that cannot be: the version probe and the two column
+    # layouts either side of the Postgres 13 rename.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ["12", "16"]
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+          --mount type=tmpfs,destination=/var/lib/postgresql/data
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache: true
+
+      - name: Enable pg_stat_statements
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -c \
+            "ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';"
+          docker restart "${{ job.services.postgres.id }}"
+          for i in $(seq 1 30); do
+            pg_isready -h localhost -U postgres && break || sleep 2
+          done
+          psql -h localhost -U postgres -c \
+            "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
+          psql -h localhost -U postgres -c "SELECT count(*) FROM pg_class;"
+
+      - name: Run against a live database
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+        run: go run ./cmd/slowq -limit 5 -save snapshot.json && test -s snapshot.json

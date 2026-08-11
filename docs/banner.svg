@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 200" width="580" height="200" role="img" aria-label="slowq — a Go CLI that ranks Postgres queries by the time they actually cost and explains what is wrong with them.">
+  <title>slowq</title>
+  <defs>
+    <radialGradient id="sqGlow" cx="80%" cy="20%" r="70%">
+      <stop offset="0%" stop-color="#00ADD8" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#00ADD8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="580" height="200" rx="12" fill="#11161D" stroke="#1F2833" stroke-width="2"/>
+  <rect width="580" height="200" rx="12" fill="url(#sqGlow)"/>
+  <rect x="0" y="0" width="4" height="200" rx="2" fill="#00ADD8"/>
+
+  <g font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace">
+    <text x="28" y="42" font-size="19" font-weight="700" fill="#E6EDF3">slowq</text>
+    <rect x="98" y="26" width="50" height="20" rx="10" fill="#00ADD8" fill-opacity="0.14" stroke="#0E7490"/>
+    <text x="123" y="40" font-size="10" fill="#00ADD8" text-anchor="middle">Go</text>
+    <rect x="154" y="26" width="86" height="20" rx="10" fill="#4169E1" fill-opacity="0.14" stroke="#3651B5"/>
+    <text x="197" y="40" font-size="10" fill="#8AA4F5" text-anchor="middle">Postgres</text>
+
+    <text x="28" y="70" font-size="12.5" fill="#8B98A8">The queries that actually cost you time — and</text>
+    <text x="28" y="90" font-size="12.5" fill="#8B98A8">why. One static binary, no agent, no dashboard.</text>
+
+    <!-- The point of the tool in one picture: ranked by total, the tall bar is
+         a fast query called constantly, not the slow one. -->
+    <g transform="translate(28 108)">
+      <text x="0" y="8" font-size="9" fill="#5A6675">RANKED BY TOTAL TIME</text>
+
+      <rect x="0" y="16" width="230" height="12" rx="3" fill="#F87171"/>
+      <text x="238" y="26" font-size="10" fill="#8B98A8">64%</text>
+      <text x="0" y="40" font-size="9" fill="#5A6675">0.81 ms × 4.8M calls</text>
+
+      <rect x="0" y="48" width="66" height="12" rx="3" fill="#FBBF24"/>
+      <text x="238" y="58" font-size="10" fill="#8B98A8">18%</text>
+      <text x="0" y="72" font-size="9" fill="#5A6675">8.6 s × 128 calls</text>
+    </g>
+
+    <g transform="translate(360 110)">
+      <text x="0" y="8" font-size="10" fill="#5A6675">SUGGESTS</text>
+      <rect x="0" y="16" width="192" height="46" rx="6" fill="#0D1117" stroke="#1F2833"/>
+      <text x="10" y="34" font-size="9.5" fill="#22D3EE">CREATE INDEX CONCURRENTLY</text>
+      <text x="10" y="50" font-size="9.5" fill="#22D3EE">ON events (user_id, created_at);</text>
+      <text x="0" y="78" font-size="10" fill="#5A6675">equality first, then the sort</text>
+    </g>
+  </g>
+</svg>
