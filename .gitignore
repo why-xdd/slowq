@@ -1,5 +1,9 @@
-slowq
-slowq.exe
-*.json
-!testdata/*.json
-dist/
+# Anchored to the repo root. Unanchored "slowq" matches any path segment with
+# that name, which silently swallowed cmd/slowq/ and shipped a repo with no
+# main package in it.
+/slowq
+/slowq.exe
+/dist/
+
+# Snapshots written by -save; the fixture under testdata/ is committed.
+/*.json
