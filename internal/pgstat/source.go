@@ -43,8 +43,13 @@ func FromPostgres(ctx context.Context, dsn string, limit int) (Snapshot, error) 
 	}
 	defer connection.Close(ctx)
 
+	// current_setting rather than SHOW: SHOW returns its value as text, and
+	// scanning that into an int fails against every real server - a bug that
+	// unit tests cannot see, because they never open a connection.
 	var version int
-	if err := connection.QueryRow(ctx, "SHOW server_version_num").Scan(&version); err != nil {
+	if err := connection.QueryRow(
+		ctx, "SELECT current_setting('server_version_num')::int",
+	).Scan(&version); err != nil {
 		return Snapshot{}, fmt.Errorf("read server version: %w", err)
 	}
 
