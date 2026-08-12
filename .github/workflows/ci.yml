@@ -68,12 +68,15 @@ jobs:
         image: postgres:${{ matrix.postgres }}
         env:
           POSTGRES_PASSWORD: postgres
+        # No tmpfs on the data directory. ALTER SYSTEM below writes
+        # postgresql.auto.conf into it, and a tmpfs is cleared by the restart
+        # that is supposed to apply that setting - the cluster comes back
+        # freshly initialised, without pg_stat_statements preloaded.
         options: >-
           --health-cmd pg_isready
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
-          --mount type=tmpfs,destination=/var/lib/postgresql/data
         ports:
           - 5432:5432
 
