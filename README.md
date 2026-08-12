@@ -61,6 +61,8 @@ Try it without a database:
 slowq -file testdata/snapshot.json
 ```
 
+<img src="https://raw.githubusercontent.com/why-xdd/slowq/main/docs/terminal.png" alt="slowq output: the 0.81ms query taking 64% of all execution time, ranked above an 8.6s report" width="100%"/>
+
 ---
 
 ## The one idea
